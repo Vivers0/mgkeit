@@ -40,6 +40,8 @@ def handler_for_button(message):
             database.get_timetable_another_day(message, 'tomorrow')
         elif msg == '🔔 Уведомления':
             database.enable_notify(message)
+        else:
+            database.another_day_timetable(message)
     
 def timer_timetable():
     obj = database.check_user_for_notify()

@@ -178,4 +178,38 @@ class DB:
 
             self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week()+1)] + '\n\n' + get_user_timetable())
 
+    def another_day_timetable(self, message):
+        msg = str(message.text).islower()
+        user_id = message.from_user.id
 
+        def eval_week():
+            if datetime.utcnow().isocalendar()[1] % 2 == 0:
+                return 'yes'
+            else:
+                return 'no'
+
+        def get_user_course():
+            self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
+            return self.cursor.fetchone()[0]
+
+        def get_user_timetable(day):
+            self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day, eval_week(),])
+            timetable =  self.cursor.fetchone()[0]
+            self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day)] + '\n\n' + timetable)
+
+        if msg == 'понедельник':
+            return get_user_timetable(0)
+        elif msg == 'вторник':
+            return get_user_timetable(1)
+        elif msg == 'среда':
+            return get_user_timetable(2)
+        elif msg == 'четверг':
+            return get_user_timetable(3)
+        elif msg == 'пятница':
+            return get_user_timetable(4)
+        elif msg == 'суббота':
+            return get_user_timetable(5)
+        elif msg == 'воскресенье':
+            return get_user_timetable(6)
+        else:
+            pass
