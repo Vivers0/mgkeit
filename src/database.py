@@ -32,9 +32,9 @@ class DB:
     def added_user_in_db(self, message):
         if self.check_user_in_db(message) == False:
             user_id = message.from_user.id
-            res = 'INSERT INTO users (id) VALUES (?)'
-            self.cursor.execute(res, [user_id,])
+            self.cursor.execute('INSERT INTO users (id) VALUES (?)', [user_id,])
             self.connect.commit()
+            self.keybutton.send_build(message)
             return True
         else:
             self.bot.reply_to(message, 'Ты уже есть в базе данных 😊')
@@ -77,10 +77,9 @@ class DB:
 
     def reset_user_in_db(self, message):
         user_id = message.from_user.id
-        res = 'DELETE FROM users WHERE id = ?'
-        self.cursor.execute(res, [user_id,])
+        self.cursor.execute('DELETE FROM users WHERE id = ?', [user_id,])
         self.connect.commit()
-        self.bot.send_message(user_id, 'Ок')
+        self.bot.send_message(user_id, 'Я удалил всю информацию о тебе. Теперь тебе нужно заново зарегистрироваться - /start')
 
         
 
@@ -128,7 +127,7 @@ class DB:
                 return 'no'
 
         def get_timetable(course):
-           self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [1, 1, 'yes',])
+           self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day_of_week(), eval_week(),])
            return self.cursor.fetchone()[0]
 
             

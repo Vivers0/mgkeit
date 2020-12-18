@@ -12,7 +12,7 @@ class Keybutton:
         self.bot.send_message(message.chat.id, 'Отлично! Для начала укажи, в каком корпусе ты учишься 😜', reply_markup=markup)
         
     def send_menu(self, message):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton('✍🏻 Расписание на сегодня')
         btn2 = types.KeyboardButton('👨🏻‍🎓 Расписание на завтра')
         btn3 = types.KeyboardButton('🔔 Уведомления')
