@@ -99,8 +99,8 @@ class DB:
             res = self.cursor.fetchone()
             self.bot.send_message(user_id, res[2])
             self.connect.commit()
-        if day == 'tomorrow':
-            print(self.timer.tomorrow())
+        # if day == 'tomorrow':
+        #     print(self.timer.tomorrow())
         self.connect.commit()
 
     def enable_notify(self, message):
@@ -137,5 +137,46 @@ class DB:
         for t in self.cursor.fetchall():
             user[t[0]] = dict(timetable=get_timetable(t[1]), day=day_of_week())
         return user
+
+    def get_timetable_another_day(self, message, day):
+        user_id = message.from_user.id
+        if day == 'today':
+            def day_of_week():
+                return datetime.utcnow().isoformat()[6]
+
+            def eval_week():
+                if datetime.utcnow().isocalendar()[1] % 2 == 0:
+                    return 'yes'
+                else:
+                    return 'no'
+
+            def get_user_course():
+                self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
+                return self.cursor.fetchone()[0]
+
+            def get_user_timetable():
+                self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day_of_week(), eval_week(),])
+                return self.cursor.fetchone()[0]
+
+            self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week())] + '\n\n' + get_user_timetable())
+        elif day == 'tomorrow':
+            def day_of_week():
+                return datetime.utcnow().isoformat()[6]
+
+            def eval_week():
+                if datetime.utcnow().isocalendar()[1] % 2 == 0:
+                    return 'yes'
+                else:
+                    return 'no'
+
+            def get_user_course():
+                self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
+                return self.cursor.fetchone()[0]
+
+            def get_user_timetable():
+                self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day_of_week()+1, eval_week(),])
+                return self.cursor.fetchone()[0]
+
+            self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week()+1)] + '\n\n' + get_user_timetable())
 
 

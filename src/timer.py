@@ -25,14 +25,14 @@ class Timer:
             await asyncio.sleep(1)
 
 
-    def today(self):
-        my_date = date.today()
-        return self.week[my_date.weekday()]
+    # def today(self):
+    #     my_date = date.today()
+    #     return self.week[my_date.weekday()]
         
 
-    def tomorrow(self):
-        my_date = date.today()
-        return self.week[my_date.weekday()+1]
+    # def tomorrow(self):
+    #     my_date = date.today()
+    #     return self.week[my_date.weekday()+1]
 
-    def another_day(self, day):
-        pass
+    def get_weeklist(self):
+        return self.week
