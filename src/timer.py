@@ -7,6 +7,7 @@ from datetime import date
 class Timer:
     def __init__(self, bot):
         self.bot = bot
+        self.eval = ['Четная', 'Нечетная']
         self.week = ['Понедельник', 'Вторник', 'Среду', 'Четверг', 'Пятницу', 'Субботу', 'Воскресенье']
 
     async def sending_messages_with_timetable(self, obj):
@@ -36,3 +37,5 @@ class Timer:
 
     def get_weeklist(self):
         return self.week
+    def get_eval(self):
+        return self.eval

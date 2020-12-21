@@ -122,9 +122,9 @@ class DB:
 
         def eval_week():
             if datetime.utcnow().isocalendar()[1] % 2 == 0:
-                return 'yes'
-            else:
                 return 'no'
+            else:
+                return 'yes'
 
         def get_timetable(course):
            self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day_of_week(), eval_week(),])
@@ -141,32 +141,32 @@ class DB:
         user_id = message.from_user.id
         if day == 'today':
             def day_of_week():
-                return datetime.utcnow().isoformat()[6]
+                return datetime.today().weekday()
 
             def eval_week():
-                if datetime.utcnow().isocalendar()[1] % 2 == 0:
-                    return 'yes'
+                if int(datetime.today().strftime("%V")) % 2 == 0:
+                    return dict(num=1, word='no')
                 else:
-                    return 'no'
+                    return dict(num=0, word='yes')
 
             def get_user_course():
                 self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
                 return self.cursor.fetchone()[0]
 
             def get_user_timetable():
-                self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day_of_week(), eval_week(),])
+                self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day_of_week(), eval_week()['word'],])
                 return self.cursor.fetchone()[0]
 
-            self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week())] + '\n\n' + get_user_timetable())
+            self.bot.send_message(user_id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week())] + ' ('+ self.timer.get_eval()[int(eval_week()['num'])] +')\n\n' + get_user_timetable())
         elif day == 'tomorrow':
             def day_of_week():
                 return datetime.utcnow().isoformat()[6]
 
             def eval_week():
                 if datetime.utcnow().isocalendar()[1] % 2 == 0:
-                    return 'yes'
-                else:
                     return 'no'
+                else:
+                    return 'yes'
 
             def get_user_course():
                 self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
@@ -184,9 +184,9 @@ class DB:
 
         def eval_week():
             if datetime.utcnow().isocalendar()[1] % 2 == 0:
-                return 'yes'
-            else:
                 return 'no'
+            else:
+                return 'yes'
 
         def get_user_course():
             self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
