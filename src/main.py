@@ -35,9 +35,9 @@ def handler_for_button(message):
     if message.chat.type == 'private':
         msg = message.text
         if msg == '✍🏻 Расписание на сегодня':
-            database.get_timetable_another_day(message, 'today')
+            database.get_timetable_button_day(message, 'today')
         elif msg == '👨🏻‍🎓 Расписание на завтра':
-            database.get_timetable_another_day(message, 'tomorrow')
+            database.get_timetable_button_day(message, 'tomorrow')
         elif msg == '🔔 Уведомления':
             database.enable_notify(message)
         else:
