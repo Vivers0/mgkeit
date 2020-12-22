@@ -119,17 +119,17 @@ class DB:
 
     def check_user_for_notify(self):
         user = dict()
-        def day_of_week():
-            return datetime.utcnow().isoformat()[6]
-
-        def eval_week():
-            if datetime.utcnow().isocalendar()[1] % 2 == 0:
+        def is_eval():
+            if int(datetime.today().strftime("%V")) % 2 == 0:
                 return 'no'
             else:
                 return 'yes'
 
+        def day_of_week():
+            return datetime.today().weekday()
+
         def get_timetable(course):
-           self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day_of_week(), eval_week(),])
+           self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day_of_week(), is_eval(),])
            return self.cursor.fetchone()[0]
 
             
@@ -147,55 +147,26 @@ class DB:
             self.send.tomorrow_button(user_id)
 
     def another_day_timetable(self, message):
-        msg = Counter(str(message.text).islower())
+        msg = Counter(str(message.text).upper())
         user_id = message.from_user.id
 
-        def get_user_course():
-            self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id,])
-            return self.cursor.fetchone()[0]
-
-        def get_user_timetable(day):
-            self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [get_user_course(), day, eval_week(),])
-            timetable =  self.cursor.fetchone()[0]
-            
-
-        if msg == Counter('понедельник'):
-            return get_user_timetable(0)
-        elif msg == Counter('вторник'):
-            return get_user_timetable(1)
-        elif msg == Counter('среда'):
-            return get_user_timetable(2)
-        elif msg == Counter('четверг'):
-            return get_user_timetable(3)
-        elif msg == Counter('пятница'):
-            return get_user_timetable(4)
-        elif msg == Counter('суббота'):
-            return get_user_timetable(5)
-        elif msg == Counter('воскресенье'):
-            return get_user_timetable(6)
+        if msg == Counter('ПОНЕДЕЛЬНИК'):
+            return self.send.another_day(user_id, 0)
+        elif msg == Counter('ВТОРНИК'):
+            return self.send.another_day(user_id, 1)
+        elif msg == Counter('СРЕДА'):
+            return self.send.another_day(user_id, 2)
+        elif msg == Counter('ЧЕТВЕРГ'):
+            return self.send.another_day(user_id, 3)
+        elif msg == Counter('ПЯТНИЦА'):
+            return self.send.another_day(user_id, 4)
+        elif msg == Counter('СУББОТА'):
+            return self.send.another_day(user_id, 5)
+        elif msg == Counter('ВОСКРЕСЕНЬЕ'):
+            return self.send.another_day(user_id, 6)
         else:
             pass
-
-    def get_user_course(self, id):
-        self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [id,])
-        return self.cursor.fetchone()[0]
-
-    def get_user_timetable(self, course, day, eval):
-        self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day, eval,])
-        return self.cursor.fetchone()[0]
-
-
-
-    def eval_week(self):
-        if int(datetime.today().strftime("%V")) % 2 == 0:
-            return dict(num=1, word='no')
-        else:
-            return dict(num=0, word='yes')
-
-    def sending_message(self, id, day, eval, timetable):
-        self.bot.send_message(id, 'Расписание на ' + self.timer.get_weeklist()[int(day_of_week())] + ' ('+ self.timer.get_eval()[int(eval_week()['num'])] +')\n\n' + get_user_timetable())
-
-    
+            
 class Send:
     def __init__(self, bot, cursor, timer):
         self.bot = bot
@@ -213,6 +184,13 @@ class Send:
         evals = self.timer.get_eval()[int(self.is_eval()['num'])]
         timetable = self.get_user_timetable(self.get_user_course(id), self.today_of_week()+1, self.is_eval()['word'])
         self.bot.send_message(id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+
+    def another_day(self, id, day):
+        week = self.timer.get_weeklist()[day]
+        evals = self.timer.get_eval()[int(self.is_eval()['num'])]
+        timetable = self.get_user_timetable(self.get_user_course(id), day, self.is_eval()['word'])
+        self.bot.send_message(id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+
     # ---------------------------
 
     def is_eval(self):
