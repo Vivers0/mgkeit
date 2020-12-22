@@ -16,24 +16,12 @@ class Timer:
                 id = res
                 timetable = obj[res]['timetable']
                 day = self.week[int(obj[res]['day'])]
-                # print(obj[res][day])
                 self.bot.send_message(id, 'Доброе утро , твое расписание на ' + day + '\n\n' + timetable)
 
-
-        schedule.every().day.at("11:46").do(sending_message, obj)
+        schedule.every().day.at("12:05").do(sending_message, obj)
         while True:
             schedule.run_pending()
             await asyncio.sleep(1)
-
-
-    # def today(self):
-    #     my_date = date.today()
-    #     return self.week[my_date.weekday()]
-        
-
-    # def tomorrow(self):
-    #     my_date = date.today()
-    #     return self.week[my_date.weekday()+1]
 
     def get_weeklist(self):
         return self.week

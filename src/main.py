@@ -5,7 +5,7 @@ from threading import (Event, Thread)
 from keybutton import Keybutton
 import asyncio
 
-TOKEN = '931991068:AAFd_FJCo2O__5D3l21ZIQiboOaiMU6-1DE'
+TOKEN = '1455905587:AAH7GOVrdtsDqG62APic-wws91zzZfeeAOQ'
 bot = TeleBot(TOKEN)
 database = DB(bot=bot)
 timer = Timer(bot)

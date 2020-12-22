@@ -42,21 +42,20 @@ class DB:
             self.bot.reply_to(message, 'Ты уже есть в базе данных 😊')
 
     def added_user_course(self, message):
+        def get_build_user(id):
+            self.cursor.execute('SELECT build_id FROM users WHERE id = ?', [id,])
+            return self.cursor.fetchone()[0]
         msg = message.text
         user_id = message.from_user.id
-        res = 'SELECT build_id FROM users WHERE id = ?'
-        self.cursor.execute(res, [user_id,])
-        build = self.cursor.fetchone()[0]
-        course_id = self.course.get_course_id(msg, build)
+        course_id = self.course.get_course_id(msg, get_build_user(user_id))
         if course_id == 0:
             msg = self.bot.send_message(user_id, 'Я не нашел такого курса 🙁. Попробуй еще раз:)')
             self.bot.register_next_step_handler(msg, self.added_user_course)
-        # print(course_id)
-        res = 'UPDATE users SET course_id = ? WHERE id = ?'
-        self.cursor.execute(res, [course_id, user_id,])
-        self.connect.commit()
-        self.bot.send_message(user_id, 'Отлично! Если ты хочешь получать уведомления с расписанием каждый день в 7 утра, то просто напиши /notify или нажми на этот текст:)')
-        self.keybutton.send_menu(message)
+        else:
+            self.cursor.execute('UPDATE users SET course_id = ? WHERE id = ?', [course_id, user_id,])
+            self.connect.commit()
+            self.bot.send_message(user_id, 'Отлично! Если ты хочешь получать уведомления с расписанием каждый день в 7 утра, то просто напиши /notify или нажми на этот текст:)')
+            self.keybutton.send_menu(message)
 
     def added_user_build_id(self, call):
         if call.message:

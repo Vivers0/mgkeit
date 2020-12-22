@@ -6,7 +6,7 @@ class Course:
 
     def get_course_id(self, msg, build):
         if build == 'mill':
-            # 1 Поток
+            # 1 Корпус
             if (Counter(msg.upper()) == Counter('1СА-1-20')):
                 return 1
             elif (Counter(msg.upper()) == Counter('1И-11-20')):
@@ -39,6 +39,6 @@ class Course:
                 return 15
             else:
                 return 0
-            # 2 Поток
+            # 2 Корпус
 
         
