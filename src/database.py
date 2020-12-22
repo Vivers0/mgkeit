@@ -91,19 +91,6 @@ class DB:
     #
     ################
 
-    def get_timetable(self, message, day):
-        user_id = message.from_user.id
-        self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [user_id])
-        course_id = self.cursor.fetchone()[0]
-        if day == 'today':
-            self.cursor.execute('SELECT * FROM timetable WHERE course_id = ?', [course_id])
-            res = self.cursor.fetchone()
-            self.bot.send_message(user_id, res[2])
-            self.connect.commit()
-        # if day == 'tomorrow':
-        #     print(self.timer.tomorrow())
-        self.connect.commit()
-
     def enable_notify(self, message):
         user_id = message.from_user.id
         self.cursor.execute('SELECT notify FROM users WHERE id = ?', [user_id,])
