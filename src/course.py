@@ -100,4 +100,27 @@ class Course:
             elif (message == Counter('2ЭМ-1-19')):
                 return 43
             # 2 Поток
-        
+            elif (message == Counter('3ЭМ-2-18')):
+                return 44
+            elif (message == Counter('3ЭМ-1-18')):
+                return 45
+            elif (message == Counter('3ЭС-18')):
+                return 46
+            elif (message == Counter('3Р-11-18')):
+                return 47
+            elif (message == Counter('3Р-18')):
+                return 48
+            elif (message == Counter('2КС-11-18')):
+                return 49
+            elif (message == Counter('4КС-11-18')):
+                return 50
+            elif (message == Counter('3МИ-18')):
+                return 51
+            elif (message == Counter('4МИ-17')):
+                return 52
+            elif (message == Counter('4Р-17')):
+                return 53
+            elif (message == Counter('5МИ-16')):
+                return 54
+            else:
+                return 0      
