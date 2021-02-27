@@ -1,4 +1,4 @@
-import sqlite3, os
+import sqlite3, os, schedule, asyncio
 from course import Course
 from timer import Timer
 from keybutton import Keybutton
@@ -6,11 +6,12 @@ from datetime import datetime
 from collections import Counter
 
 class DB:
+    time_for_notify = '04:00'
     def __init__(self, bot):
         self.bot = bot
         self.course = Course()
         self.keybutton = Keybutton(self.bot)
-        self.timer = Timer(self.bot)
+        self.timer = Timer()
         self.connect = sqlite3.connect(os.path.join(os.path.dirname(__file__), 'database','database.db'), check_same_thread=False)
         self.cursor = self.connect.cursor()
         self.send = Send(self.bot, self.cursor, self.timer)
@@ -34,6 +35,7 @@ class DB:
                 self.keybutton.send_build(message)
             else:
                 self.bot.reply_to(message, 'Ты уже есть в базе данных 😊')
+            self.connect.commit()
         except:
             self.bot.reply_to(message, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
         finally:
@@ -113,26 +115,47 @@ class DB:
         finally:
             self.connect.commit()
 
-    def check_user_for_notify(self):
-        user = dict()
-        def is_eval():
-            if int(datetime.today().strftime("%V")) % 2 == 0:
-                return 'no'
-            else:
-                return 'yes'
+    async def main_notify(self):
+        def get_user_object():
+            user = dict()
+            def is_eval():
+                if int(datetime.today().strftime("%V")) % 2 == 0:
+                    return 'no'
+                else:
+                    return 'yes'
 
-        def day_of_week():
-            return datetime.today().weekday()
-
-        def get_timetable(course):
-           self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day_of_week(), is_eval(),])
-           return self.cursor.fetchone()[0]
-
-        self.cursor.execute('SELECT * FROM users WHERE notify = ?', ['True',])
+            def get_timetable(course):
+                try:
+                    sql = 'SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?'
+                    self.cursor.execute(sql, [course, datetime.today().weekday(), is_eval(),])
+                    return self.cursor.fetchone()[0]
+                except TypeError:
+                    pass
+            self.cursor.execute('SELECT * FROM users WHERE notify = ?', ['True',])
         
-        for t in self.cursor.fetchall():
-            user[t[0]] = dict(timetable=get_timetable(t[1]), day=day_of_week())
-        return user
+            for t in self.cursor.fetchall():
+                user[t[0]] = dict(timetable=get_timetable(t[1]), day=datetime.today().weekday())
+            return user
+
+        obj = get_user_object()
+        def sending_message(obj):
+            for id in obj:
+                timetable = obj[id]['timetable']
+                day = self.timer.week[int(obj[id]['day'])]
+                self.bot.send_message(id, 'Доброе утро , твое расписание на ' + day + '\n\n' + timetable)
+            try:
+                self.main_notify()
+            except RuntimeWarning:
+                print('database: RuntimeWarning')
+
+        schedule.every().day.at(self.time_for_notify).do(sending_message, obj)
+        while True:
+            schedule.run_pending()
+            await asyncio.sleep(1)
+
+        
+                
+
 
     def get_timetable_button_day(self, message, day):
         user_id = message.from_user.id
@@ -207,10 +230,16 @@ class Send:
         return datetime.today().weekday()
 
     def get_user_course(self, id):
-        self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [id,])
-        return self.cursor.fetchone()[0]
-        self.bot.send_message(id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        try:
+            self.cursor.execute('SELECT course_id FROM users WHERE id = ?', [id,])
+            return self.cursor.fetchone()[0]
+        except:
+            self.bot.send_message(id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
 
     def get_user_timetable(self, course, day, eval):
-        self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day, eval,])
-        return self.cursor.fetchone()[0]
+        try:
+            self.cursor.execute('SELECT timetable FROM timetable WHERE course_id = ? AND day_week = ? AND is_odd = ?', [course, day, eval,])
+            return self.cursor.fetchone()[0]
+        except:
+            pass
+

@@ -8,7 +8,7 @@ import asyncio
 TOKEN = '1455905587:AAH7GOVrdtsDqG62APic-wws91zzZfeeAOQ'
 bot = TeleBot(TOKEN)
 database = DB(bot=bot)
-timer = Timer(bot)
+timer = Timer()
 keybutton = Keybutton(bot)
 
 # Commands
@@ -30,6 +30,10 @@ def send_menu(message):
 def reset_command(message):
     database.reset_user_in_db(message)
 
+@bot.message_handler(commands=['notify'])
+def notify_command(message):
+    database.enable_notify(message)
+
 @bot.message_handler(content_types=['text'])
 def handler_for_button(message):
     if message.chat.type == 'private':
@@ -44,8 +48,7 @@ def handler_for_button(message):
             database.another_day_timetable(message)
     
 def timer_timetable():
-    obj = database.check_user_for_notify()
-    asyncio.run(timer.sending_messages_with_timetable(obj))
+    asyncio.run(database.main_notify())
     
 def main():
     bot.polling()

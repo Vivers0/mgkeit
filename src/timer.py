@@ -1,27 +1,23 @@
-import calendar
-import schedule
-import time, asyncio
+import schedule, time, asyncio
 from datetime import date
 
-
 class Timer:
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self):
         self.eval = ['Четная', 'Нечетная']
         self.week = ['Понедельник', 'Вторник', 'Среду', 'Четверг', 'Пятницу', 'Субботу', 'Воскресенье']
 
-    async def sending_messages_with_timetable(self, obj):
-        def sending_message(id):
-            for res in obj:
-                id = res
-                timetable = obj[res]['timetable']
-                day = self.week[int(obj[res]['day'])]
-                self.bot.send_message(id, 'Доброе утро , твое расписание на ' + day + '\n\n' + timetable)
+    # async def sending_messages_with_timetable(self, obj):
+    #     def sending_message():
+    #         for id in obj:
+    #             timetable = obj[id]['timetable']
+    #             day = self.week[int(obj[id]['day'])]
+    #             self.bot.send_message(id, 'Доброе утро , твое расписание на ' + day + '\n\n' + timetable)
+    #     self.database.check_user_for_notify()
 
-        schedule.every().day.at("12:05").do(sending_message, obj)
-        while True:
-            schedule.run_pending()
-            await asyncio.sleep(1)
+    #     schedule.every().day.at("14:52").do(sending_message)
+    #     while True:
+    #         schedule.run_pending()
+    #         await asyncio.sleep(1)
 
     def get_weeklist(self):
         return self.week

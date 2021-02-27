@@ -1,0 +1,8 @@
+sqlite3
+os
+Counter
+threading
+asyncio
+pyTelegramBotAPI
+schedule
+asyncio
