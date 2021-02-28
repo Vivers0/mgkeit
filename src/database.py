@@ -137,18 +137,20 @@ class DB:
                 user[t[0]] = dict(timetable=get_timetable(t[1]), day=datetime.today().weekday())
             return user
 
-        obj = get_user_object()
-        def sending_message(obj):
+        
+        def sending_message():
+            obj = get_user_object()
             for id in obj:
                 timetable = obj[id]['timetable']
+                print(self.timer.week[int(obj[id]['day'])], obj[id]['day'])
                 day = self.timer.week[int(obj[id]['day'])]
-                self.bot.send_message(id, 'Доброе утро , твое расписание на ' + day + '\n\n' + timetable)
+                self.bot.send_message(id, 'Доброе утро, твое расписание на ' + day + '\n\n' + timetable)
             try:
                 self.main_notify()
             except RuntimeWarning:
                 print('database: RuntimeWarning')
 
-        schedule.every().day.at(self.time_for_notify).do(sending_message, obj)
+        schedule.every().day.at('13:19').do(sending_message)
         while True:
             schedule.run_pending()
             await asyncio.sleep(1)

@@ -3,10 +3,9 @@ from database import DB
 from timer import Timer
 from threading import (Event, Thread)
 from keybutton import Keybutton
-import asyncio
+import asyncio, settings
 
-TOKEN = '1455905587:AAH7GOVrdtsDqG62APic-wws91zzZfeeAOQ'
-bot = TeleBot(TOKEN)
+bot = TeleBot(settings.TOKEN)
 database = DB(bot=bot)
 timer = Timer()
 keybutton = Keybutton(bot)
