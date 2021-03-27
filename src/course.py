@@ -69,11 +69,11 @@ class Course:
                 return 29
             elif (message == Counter('3СА-18')):
                 return 30
-            else:
-                return 0
-        else:
+        #     else:
+        #         return 0
+        # if build == 'sudo':
             # 1 Поток
-            if (message == Counter('1ЭС-20')):
+            elif (message == Counter('1ЭС-20')):
                 return 31
             elif (message == Counter('1ЭМ-2-20')):
                 return 32
