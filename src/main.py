@@ -24,6 +24,10 @@ def handler_for_button(message):
         msg = message.text
         if msg == '🔔 Уведомления':
             database.notify(message)
+
+@bot.message_handler(commands=['reset'])
+def reset_command(message):
+    database.reset(message)
     
 def main():
     bot.polling()
