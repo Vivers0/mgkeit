@@ -24,6 +24,10 @@ def reset_command(message):
 def send_menu(message):
     keybutton.send_menu(message)
 
+@bot.message_handler(commands=['notify'])
+def send_notify(message):
+    database.notify(message)
+
 @bot.message_handler(content_types=['text'])
 def handler_for_button(message):
     if message.chat.type == 'private':

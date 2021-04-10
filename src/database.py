@@ -60,7 +60,6 @@ class DB:
     def reset(self, message):
         user_id = message.from_user.id
         r = requests.delete(self.user+str(user_id))
-        print(r)
         if r.status_code == 200:
             self.bot.send_message(user_id, 'Я удалил всю информацию о тебе. Теперь тебе нужно заново зарегистрироваться - /start')
         else:
@@ -133,15 +132,10 @@ class DB:
             if r.status_code == 200:
                 return r.json()['user']['course_id']
 
-        r = requests.get('http://vivers0.pythonanywhere.com/api/timetable').json()
-        for i in r['timetable']:
-            if i['course_id'] == user():
-                self.bot.reply_to(message, i['timetable'])
-
-            week = self.week[int(self.send.today_of_week())]
-            evals = self.eval[int(self.send.is_eval()['num'])]
-            timetable = timetable(user(), self.send.today_of_week(), self.send.is_eval()['word'])
-            self.bot.send_message(message.from_user.id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+        week = self.week[int(self.send.today_of_week())]
+        evals = self.eval[int(self.send.is_eval()['num'])]
+        timetable = timetable(user(), self.send.today_of_week(), self.send.is_eval()['word'])
+        self.bot.send_message(message.from_user.id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
 
     def another_day_timetable(self, message):
         msg = Counter(str(message.text).upper())
@@ -200,9 +194,9 @@ class Send:
 
     def is_eval(self):
         if int(datetime.today().strftime("%V")) % 2 == 0:
-            return dict(num=1, word='no')
+            return dict(num=1, word=False)
         else:
-            return dict(num=0, word='yes')
+            return dict(num=0, word=True)
 
     def today_of_week(self):
         return datetime.today().weekday()
