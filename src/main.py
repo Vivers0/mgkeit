@@ -1,14 +1,20 @@
+import asyncio, requests, settings
 from telebot import TeleBot, types
-from database import DB
+from database import Database
 from threading import (Event, Thread)
 from keybutton import Keybutton
-import asyncio, requests
-from settings import *
 
 
-bot = TeleBot(TOKEN)
-database = DB(bot)
+bot = TeleBot(settings.TOKEN)
+database = Database(bot)
 keybutton = Keybutton(bot)
+
+from notify import Notify
+from send import Send
+from timetable import Timetable
+send = Send(bot)
+notify = Notify(bot)
+timetable = Timetable(bot)
 
 # Commands
 
@@ -33,7 +39,7 @@ def handler_for_button(message):
     if message.chat.type == 'private':
         msg = message.text
         if msg == '✍🏻 Расписание на сегодня':
-            database.today_timetable(message)
+            timetable.today_timetable(message)
         elif msg == '👨🏻‍🎓 Расписание на завтра':
             database.get_timetable_button_day(message, 'tomorrow')
         elif msg == '🔔 Уведомления':
@@ -42,14 +48,14 @@ def handler_for_button(message):
             database.another_day_timetable(message)
     
 def timer_timetable():
-    asyncio.run(database.main_notify())
+    asyncio.run(notify.notify())
 
 def main():
     bot.polling()
 
 if __name__ == '__main__':
     print('Ready!')
-    p1 = Thread(target=timer_timetable)
+    # p1 = Thread(target=timer_timetable)
     p2 = Thread(target=main)
-    p1.start()
+    # p1.start()
     p2.start()
