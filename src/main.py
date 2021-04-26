@@ -41,11 +41,12 @@ def handler_for_button(message):
         if msg == '✍🏻 Расписание на сегодня':
             timetable.today_timetable(message)
         elif msg == '👨🏻‍🎓 Расписание на завтра':
-            database.get_timetable_button_day(message, 'tomorrow')
+            timetable.tomorrow_timetable(message)
         elif msg == '🔔 Уведомления':
             database.notify(message)
-        else:
-            database.another_day_timetable(message)
+        elif msg.lower() in database.week_s:
+            timetable.another_day_timetable(message)
+        else: pass
     
 def timer_timetable():
     asyncio.run(notify.notify())
