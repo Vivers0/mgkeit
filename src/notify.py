@@ -38,7 +38,7 @@ class Notify(Send):
             self.get_user_obj()
         except RuntimeWarning:
             pass
-        schedule.every().day.at('17:17').do(self.notify)
+        schedule.every().day.at('23:20').do(self.notify)
         while True:
             schedule.run_pending()
             await asyncio.sleep(1)

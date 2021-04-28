@@ -44,9 +44,8 @@ def handler_for_button(message):
             timetable.tomorrow_timetable(message)
         elif msg == '🔔 Уведомления':
             database.notify(message)
-        elif msg.lower() in database.week_s:
+        else:
             timetable.another_day_timetable(message)
-        else: pass
     
 def timer_timetable():
     asyncio.run(notify.notify())
@@ -56,7 +55,7 @@ def main():
 
 if __name__ == '__main__':
     print('Ready!')
-    # p1 = Thread(target=timer_timetable)
+    p1 = Thread(target=timer_timetable)
     p2 = Thread(target=main)
-    # p1.start()
+    p1.start()
     p2.start()

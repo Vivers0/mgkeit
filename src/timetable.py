@@ -55,7 +55,7 @@ class Timetable(Send):
         user_id = message.from_user.id
         week = self.week[day]
         evals = self.eval[self.is_eval()['num']]
-        timetable = self.get_timetable(self.get_user_course(message), day)
+        timetable = self.get_timetable(message, day)
         try:
             self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
         except:

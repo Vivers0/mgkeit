@@ -14,7 +14,6 @@ class Database:
         self.timetable = "http://vivers0.pythonanywhere.com/api/timetable/"
         # Time
         self.eval = ['Четная', 'Нечетная']
-        self.week_s = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
         self.week = ['Понедельник', 'Вторник', 'Среду', 'Четверг', 'Пятницу', 'Субботу', 'Воскресенье']
 
     def registration(self, message):
@@ -94,7 +93,6 @@ class Database:
     # Method
 
     def get_user_course(self, message):
-        print(type(message))
         r = requests.get(self.user+str(message.from_user.id))
         if r.status_code == 200:
             return r.json()['user']['course_id']
