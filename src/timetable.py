@@ -1,3 +1,4 @@
+from datetime import time
 from send import Send
 from collections import Counter
 
@@ -5,7 +6,8 @@ class Timetable(Send):
     def get_timetable(self, message, day):
         course = self.get_user_course(message)
         timetable = self.get(self.timetable)
-        for i in timetable['timetable']:
+        for el in timetable['res']:
+            i = el['fields']
             if i['course_id'] == course:
                 if i['day_week'] == day:
                     if i['is_odd'] == self.is_eval()['num']:
@@ -37,7 +39,7 @@ class Timetable(Send):
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, self.today_of_week())
         try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
         except:
             self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
 
@@ -47,7 +49,7 @@ class Timetable(Send):
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, self.today_of_week()+1)
         try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
         except:
             self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
 
@@ -57,7 +59,7 @@ class Timetable(Send):
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, day)
         try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + timetable)
+            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + '\n'.join(timetable))
         except:
             self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
 

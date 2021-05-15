@@ -48,7 +48,7 @@ def handler_for_button(message):
             timetable.another_day_timetable(message)
     
 def timer_timetable():
-    asyncio.run(notify.notify())
+    asyncio.run(notify.notify_main())
 
 def main():
     bot.polling()
