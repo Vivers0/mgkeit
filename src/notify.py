@@ -8,6 +8,8 @@ class Notify(Send):
 
     def get_user_timetable(self, course):
         timetable = self.get(self.timetable)
+        if timetable is None:
+            return None 
         for el in timetable['res']:
             i = el['fields']
             if i['course_id'] == course:
@@ -20,13 +22,15 @@ class Notify(Send):
         for user in users['users']:
             if user['notify'] == True:
                 arr.append(user)
-            print(user)
         return arr
 
     def get_user_obj(self):
         user = dict()
         for t in self.users():
-            user[t['user_id']] = dict(timetable=self.get_user_timetable(t['course_id']), day=datetime.today().weekday())
+            if self.get_user_timetable(t['course_id']) is None:
+                user[t['user_id']] = dict(timetable=None, day=datetime.today().weekday())
+            else:
+                user[t['user_id']] = dict(timetable=self.get_user_timetable(t['course_id']), day=datetime.today().weekday())
         return user
 
     async def notify_main(self):
@@ -35,8 +39,11 @@ class Notify(Send):
             for user in obj:
                 timetable = obj[user]['timetable']
                 day = self.week[int(obj[user]['day'])]
-                self.bot.send_message(user, 'Доброе утро, твое расписание на ' + day + '\n\n' + '\n'.join(timetable))
-        schedule.every().day.at('19:42').do(main)
+                if obj[user]['timetable'] is None:
+                    self.bot.send_message(user, 'Доброе утро, твое расписание на ' + day + '\n\n' + "Расписание не добавлено в Базу Данных")
+                else:
+                    self.bot.send_message(user, 'Доброе утро, твое расписание на ' + day + '\n\n' + '\n'.join(timetable))
+        schedule.every().day.at('20:55').do(main)
         while True:
             schedule.run_pending()
             await asyncio.sleep(1)

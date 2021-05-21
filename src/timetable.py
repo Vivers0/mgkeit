@@ -6,6 +6,8 @@ class Timetable(Send):
     def get_timetable(self, message, day):
         course = self.get_user_course(message)
         timetable = self.get(self.timetable)
+        if timetable is None:
+            return None  
         for el in timetable['res']:
             i = el['fields']
             if i['course_id'] == course:
@@ -38,28 +40,37 @@ class Timetable(Send):
         week = self.week[self.today_of_week()]
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, self.today_of_week())
-        try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
-        except:
-            self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        if not timetable is None:
+            try:
+                self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
+            except:
+                self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        else:
+            self.bot.send_message(user_id, 'Доброе утро, твое расписание на ' + week + ' ('+ evals +')\n\n' + "Расписание не добавлено в Базу Данных")
 
     def tomorrow_timetable(self, message):
         user_id = message.from_user.id
         week = self.week[self.today_of_week()+1]
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, self.today_of_week()+1)
-        try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
-        except:
-            self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        if not timetable is None:
+            try:
+                self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
+            except:
+                self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        else:
+            self.bot.send_message(user_id, 'Доброе утро, твое расписание на ' + week + ' ('+ evals +')\n\n' + "Расписание не добавлено в Базу Данных")
 
     def get_another_timetable(self, message, day):
         user_id = message.from_user.id
         week = self.week[day]
         evals = self.eval[self.is_eval()['num']]
         timetable = self.get_timetable(message, day)
-        try:
-            self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + '\n'.join(timetable))
-        except:
-            self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        if not timetable is None:
+            try:
+                self.bot.send_message(user_id, 'Расписание на ' + week + ' ('+ evals +')\n\n' + "\n".join(timetable))
+            except:
+                self.bot.send_message(user_id, 'Что-то пошло не так, попробуй еще раз зарегистрироваться - /start')
+        else:
+            self.bot.send_message(user_id, 'Доброе утро, твое расписание на ' + week + ' ('+ evals +')\n\n' + "Расписание не добавлено в Базу Данных")
 
