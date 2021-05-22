@@ -1,17 +1,16 @@
 import asyncio, requests, settings
 from telebot import TeleBot, types
-from database import Database
 from threading import (Event, Thread)
-from keybutton import Keybutton
-
 
 bot = TeleBot(settings.TOKEN)
-database = Database(bot)
-keybutton = Keybutton(bot)
 
+from keybutton import Keybutton
+from database import Database
 from notify import Notify
 from send import Send
 from timetable import Timetable
+database = Database(bot)
+keybutton = Keybutton(bot)
 send = Send(bot)
 notify = Notify(bot)
 timetable = Timetable(bot)

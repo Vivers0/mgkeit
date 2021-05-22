@@ -5,6 +5,7 @@ from collections import Counter
 class Timetable(Send):
     def get_timetable(self, message, day):
         course = self.get_user_course(message)
+        # Dolgo
         timetable = self.get(self.timetable)
         if timetable is None:
             return None  

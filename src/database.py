@@ -12,7 +12,7 @@ class Database:
         self.keybutton = Keybutton(self.bot)
         self.user = "http://vivers0.pythonanywhere.com/api/user/"
         # self.timetable = "http://vivers0.pythonanywhere.com/api/timetable/"
-        self.timetable = "http://localhost:8000/api/timetable/"
+        self.timetable = "http://vivers0.pythonanywhere.com/api/timetable/"
         # Time
         self.eval = ['Четная', 'Нечетная']
         self.week = ['Понедельник', 'Вторник', 'Среду', 'Четверг', 'Пятницу', 'Субботу', 'Воскресенье']
@@ -99,9 +99,11 @@ class Database:
             return r.json()['user']['course_id']
     # Responce
 
-    def get(self, typeу):
+    def get(self, str):
         try:
-            return requests.get(typeу).json()
+            res = requests.get(str)
+            if res.json() is None:
+                return None
         except requests.RequestException:
             print("Database: RequestException")
 
